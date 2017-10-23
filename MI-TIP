@@ -1,0 +1,110 @@
+#!/bin/bash
+####
+## functions
+####
+test_dir(){ # test and open the directory
+  if [ ! -d $1 ]; then
+    mkdir $1
+  fi
+}
+
+write_log(){
+    echo -e $(date +"%T")"\t"$2 >> $1
+}
+
+test_file(){ # check file
+  if [ ! -e $1 ];then
+    exit $1" not found"
+  fi
+}
+
+test_file $1
+
+source $1
+test_dir $TMP_DIR
+####
+# Make sam files from row reads
+# input:
+#	$FQ
+#	$REF_FASTA
+####
+test_dir $SAM_DIR
+test_file $REF_FASTA
+test_file $FQ
+write_log $log_f 'Remapping...'
+make_mapping_commands.py --l $FQ --r $REF_FASTA --out $SAM_DIR > $make_sam_commands
+parallel --retries 3 -j 30 --joblog $sam_log < $make_sam_commands
+ls $SAM_DIR/* > $sam_list 
+
+#####
+# Call variances
+# input: 
+#	$sam_list
+#	$REF_FASTA
+####
+test_dir $BAM_DIR 
+test_dir $VCF_DIR
+write_log $log_f 'Calling variants...'
+## import the script which generates the commands for parallel
+make_sam2vcf_commands.py --r $REF_FASTA --s $sam_list --b $BAM_DIR --v $VCF_DIR --n $THR_NUM ## generating six commands files, including five of running different processes and one for ordering them
+bash sam2vcf.conductor.commands
+ls $VCF_DIR/* > $vcf_list
+mv *.commands $TMP_DIR
+mv *.log $TMP_DIR
+
+#####
+# Make consensus sequences with the information of variances
+# input: 
+#	$GENE_REGIONS
+#	$vcf_list
+#	$REF_FASTA
+####
+test_dir $GENE_SEQ_DIR
+write_log $log_f 'Computing consensus sequences...'
+#cat $REF_GFF | grep -v '^#'| awk '$3=="gene"''{print $1":"$4"-"$5}'> $GENE_REGIONS # skip this if a gene regions file is already detemined
+## import the script which generates the commands for parallel
+makeConsensus_commands.py --s makeConsensus_core.py --r $REF_FASTA --v $vcf_list --g $GENE_REGIONS --o $GENE_SEQ_DIR > $make_concensus_commands 
+parallel --retries 3 -j $THR_NUM --joblog $consensus_log < $make_concensus_commands 
+ls $GENE_SEQ_DIR/* > $seqfiles_list 
+
+#####
+# Cluster the sequences 
+# One file: one gene group
+# One sequence in a file: an isolate
+# input: 
+#	$seqfiles_list
+#	$core_genes
+####
+test_dir $GENE_FAMILY_SEQ_DIR
+write_log $log_f 'Detecting gene families...'
+makeGroupFasta.py --l $seqfiles_list --d $GENE_FAMILY_SEQ_DIR --c $core_genes
+
+#####
+# Run alignment 
+# input: 
+#	$core_genes
+####
+test_dir $GENE_FAMILY_ALN_DIR
+write_log $log_f 'Aligning gene sequences...'
+makeGroupAln.py -f $core_genes -o $GENE_FAMILY_ALN_DIR -p 0 -a globalpair > $mafft_commands 
+parallel -j $THR_NUM --retries 5 --joblog $mafft_log < $mafft_commands
+ls $GENE_FAMILY_ALN_DIR/* > $aln_list
+
+#####
+# Filter the sequence groups by average sequence identity
+# input: 
+#	$aln_list
+#####
+Compute_avIdent.sh $aln_list >  $aln_ident_list
+cat $aln_ident_list | sort -rnk 2 | awk -v c=$aln_ident_list_CUT '$2 > c'| awk '{print $1}' > $good_genes_list # quality control
+concatenateAln.py --l  $good_genes_list --o $FINAL_ALN # make a concatenated alignment
+
+#####
+# Compute the phylogeny
+# input: 
+#	$FINAL_ALN
+####
+write_log $log_f 'Computing the tree...'
+FastTreeMP -nt -gtr -gamma $FINAL_ALN > $FINAL_TREE
+write_log $log_f '=DONE='
+

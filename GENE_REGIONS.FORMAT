@@ -1,0 +1,3 @@
+Each gene region should be described in one single row of the format:
+	gene:start-end
+The 'gene' can be any name to specify the locus. The coordinates 'start' and 'end' should be 1-based, which is the same as those in gff format. 

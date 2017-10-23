@@ -1,0 +1,20 @@
+The fastq list file is a tab-separated file of the columns:
+	name: name of specie/strain
+	type: either 'single', 'paired-end' or 'mate-pair'
+	reads_file1: fastq file
+	reads_file2: the paired fastq file
+	insert_size: the insertion length between two reads
+	insert_std: the standard deviation of insertion length, -1 if unknown
+A header line of the correct column names should be include. For paired-end and mate-pair reads, all the columns are required. For single reads, only 'name', 'type', and 'reads_file1' are required.
+
+- Example of mate-pair and paired-end:
+'''
+name	type	reads_file1	reads_file2	insert_size	insert_std
+PA_D21	mate-pair	PA_D211.fq	PA_D212.fq	2500	50
+PA_D22	paired-end	PA_D221.fq	PA_D222.fq	2500	50
+'''
+- Example of single:
+'''
+name	type	reads_file1
+PA	single	PA.fq
+'''
