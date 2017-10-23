@@ -1,6 +1,6 @@
 ## MI-TIP: MIcrobial Tree Inference Pipeline
 #### Introduction
-MI-TIP is a pipeline to compute a tree of bacterial population without precomputed genomic sequences.
+MI-TIP is a pipeline to compute a tree of bacterial population without precomputed genomic sequences. To conduct the pipeline, only one single command is required. All the options required by the pipeline can be editted in an independent file, helping to review and reproduce results with the same method and data. 
 #### Dependencies
 - samtools (1.3.1),bcftools (1.3.1), and htslib (1.3.1) https://github.com/samtools
 Li H, A statistical framework for SNP calling, mutation discovery, association mapping and population genetical parameter estimation from sequencing data. Bioinformatics. 2011 Nov 1;27(21):2987-93. Epub 2011 Sep 8. [PMID: 21903627]
