@@ -1,5 +1,4 @@
-## MI-TIP
-###### microbial tree inference pipeline
+## MI-TIP: MIcrobial Tree Inference Pipeline
 #### Introduction
 MI-TIP is a pipeline to compute a tree of bacterial population without precomputed genomic sequences.
 #### Dependencies
@@ -30,33 +29,34 @@ Price, M.N., Dehal, P.S., and Arkin, A.P. (2010) FastTree 2 -- Approximately Max
 - reference genome (fasta format)
 - fastq files
 2. Run the command
-'''
+```
 MI-TIP <MI-TIP.config>
-'''
+```
 
 #### Priciple processes of MI-TIP
-1. detect variant
-'''
-## Create commands to run stampy
+##### 1. detect variant
+```
+# Create commands to run stampy
 make_mapping_commands.py --l $FQ --r $REF_FASTA --out $SAM_DIR > $make_sam_commands
-## Run commands parallely
+# Run commands parallely
 parallel --retries 3 -j 30 --joblog $sam_log < $make_sam_commands
-## generating six commands files, including five of running different processes and one for ordering them
+# generating six commands files, including five of running different processes and one for ordering them
 make_sam2vcf_commands.py --r $REF_FASTA --s $sam_list --b $BAM_DIR --v $VCF_DIR --n $THR_NUM
 bash sam2vcf.conductor.commands
+```
 
-'''
-2. compute coding sequences
-'''
-## Create commands to run makeConsensus_core.py
+##### 2. compute coding sequences
+
+```
+# Create commands to run makeConsensus_core.py
 makeConsensus_commands.py --s makeConsensus_core.py --r $REF_FASTA --v $vcf_list --g $GENE_REGIONS --o $GENE_SEQ_DIR > $make_concensus_commands
-## Run commands parallely
+# Run commands parallely
 parallel --retries 3 -j $THR_NUM --joblog $consensus_log < $make_concensus_commands
+```
 
-'''
-3. align gene sequences and conduct tree inference
+##### 3. align gene sequences and conduct tree inference
 
-'''
+```
 # Cluster the consensus sequences of coding region by genes
 makeGroupFasta.py --l $seqfiles_list --d $GENE_FAMILY_SEQ_DIR --c $core_genes
 # Filter gene families by alignment quality
@@ -66,4 +66,4 @@ cat $aln_ident_list | sort -rnk 2 | awk -v c=$aln_ident_list_CUT '$2 > c'| awk '
 concatenateAln.py --l  $good_genes_list --o $FINAL_ALN # make a concatenated alignment
 # Compute a tree with the concatenated alignment
 FastTreeMP -nt -gtr -gamma $FINAL_ALN > $FINAL_TREE
-
+```
