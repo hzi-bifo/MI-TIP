@@ -22,18 +22,18 @@ Salvador Capella-Gutierrez; Jose M. Silla-Martinez; Toni Gabaldon. Bioinformatic
 - FastTreeMP (2.1.10 Double precision, No SSE3, OpenMP) 
 Price, M.N., Dehal, P.S., and Arkin, A.P. (2010) FastTree 2 -- Approximately Maximum-Likelihood Trees for Large Alignments. PLoS ONE, 5(3):e9490. doi:10.1371/journal.pone.0009490.
 #### Usage 
-1. Check required files
+##### 1. Check required files
 - MI-TIP.config (copy and modify before running MI-TIP)
 - fq list (see FQ_LIST.FORMAT for details)
 - gene regions list (see GENE_REGIONS.FORMAT for details)
 - reference genome (fasta format)
 - fastq files
-2. Run the command
+##### 2. Run the command
 ```
 MI-TIP <MI-TIP.config>
 ```
 
-#### Priciple processes of MI-TIP
+#### Principle processes
 ##### 1. detect variant
 ```
 # Create commands to run stampy
