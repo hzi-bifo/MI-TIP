@@ -68,3 +68,36 @@ concatenateAln.py --l  $good_genes_list --o $FINAL_ALN # make a concatenated ali
 # Compute a tree with the concatenated alignment
 FastTreeMP -nt -gtr -gamma $FINAL_ALN > $FINAL_TREE
 ```
+#### What to do when the pipeline doesn't work well?
+MI-TIP is a bash script. By copying and editing it, processes can be easily conducted again. 
+##### step 1: check the log file (default: tmp/MI-TIP.log)
+A log file is written to help people track problems. The file includes two columns: the time stamp, and the message. For example, the last message can be:
+```
+17:39:14        Computing consensus sequences...
+```
+and it means that the pipeline stopped when computing the consensus sequences, suggesting that some problem happened after the message was written by MI-TIP.
+##### step 2: find possible problems in the MI-TIP script
+MI-TIP involves in a lot of tools, so it is important to narrow down which part really caused the problem. By checking the log file, it is known that some problems happened after the message was written. In this example, subsequent processes which should be conducted after the last message was written include
+```
+makeConsensus_commands.py --s makeConsensus_core.py --r $REF_FASTA --v $vcf_list --g $GENE_REGIONS --o $GENE_SEQ_DIR > $make_concensus_commands
+```
+and
+```
+parallel --retries 3 -j $THR_NUM --joblog $consensus_log < $make_concensus_commands
+```
+It is reasonable to firstly check whether the commands in ```$make_concensus_commands``` are correct. Then, if there was nothing problematic, the ```$consensus_log``` can then be checked to see whether any command exit with unusual status. it can be suggested to test the single line command again to find the putative problem. A common problem can be caused by incorrect path of files. 
+##### step 3: solve the problem and continue the piepline
+Once the problem is solved, the pipeline can be continued to finish the rest parts. Please copy the```$MITIP_HOME/MI-TIP``` to ```./MI-TIP.copy```, like:
+```
+cp $MITIP_HOME/MI-TIP ./MI-TIP.copy
+```
+With any prefered editor, such as vim, users can disable the parts which have been already done. Those parts can be deleted or encapsulated into functions. 
+
+_Please note that commands before_
+```
+# Workflow begins #
+```
+_are strongly suggested to be unchanged._
+##### step 4: ask for help if the problem cannot be solved
+Please open an issue in this repository.
+
