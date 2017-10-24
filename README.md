@@ -17,7 +17,7 @@ git clone https://github.com/hzi-bifo/MI-TIP
 ```
 - step 3: Add the path to the environmental variables. If the installation directory is ```~/bin/MI-TIP```, the enviromental variable ```$PATH``` can be updated by the command
 ```
-export PATH='~bin/MI-TIP':$PATH
+export PATH='~/bin/MI-TIP':$PATH
 ```
 This command can also be inserted to the ```~/.profile``` to make the change be done automatically. 
 #### Dependencies<a name="dependencies"></a>
