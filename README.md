@@ -96,7 +96,7 @@ A log file is written to help people track problems. The file includes two colum
 ```
 and it means that the pipeline stopped when computing the consensus sequences, suggesting that some problem happened after the message was written by MI-TIP.
 ##### step 2: find possible problems in the MI-TIP script
-MI-TIP involves in a lot of tools, so it is important to narrow down which part really caused the problem. By checking the log file, it is known that some problems happened after the message was written. In this example, subsequent processes which should be conducted after the last message was written include
+By checking the log file, it is known that some problems happened after the message was written. In this example, subsequent processes which didn't't run correctly after the last message was written are
 ```
 makeConsensus_commands.py --s makeConsensus_core.py --r $REF_FASTA --v $vcf_list --g $GENE_REGIONS --o $GENE_SEQ_DIR > $make_concensus_commands
 ```
