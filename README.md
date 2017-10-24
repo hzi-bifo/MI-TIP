@@ -90,11 +90,11 @@ FastTreeMP -nt -gtr -gamma $FINAL_ALN > $FINAL_TREE
 #### What to do when the pipeline doesn't work as expected?<a name="troubleshooting"></a>
 MI-TIP is a bash script. By copying and editing it, processes can be easily conducted again. 
 ##### step 1: check the log file (default: tmp/MI-TIP.log)
-A log file is written to help people track problems. The file includes two columns: the time stamp, and the message. For example, the last message can be:
+A log file is written to help people track problems. The file includes two columns: the time stamp, and the message. For example, if the last line in the log was:
 ```
 17:39:14        Computing consensus sequences...
 ```
-and it means that the pipeline stopped when computing the consensus sequences, suggesting that some problem happened after the message was written by MI-TIP.
+it means that the pipeline stopped when computing the consensus sequences, suggesting that some problem happened after the message was written by MI-TIP.
 ##### step 2: find possible problems in the MI-TIP script
 By checking the log file, it is known that some problems happened after the message was written. In this example, subsequent processes which didn't't run correctly after the last message was written are
 ```
