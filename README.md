@@ -110,7 +110,7 @@ Once the problem is solved, the pipeline can be continued to finish the rest par
 ```
 cp $MITIP_HOME/MI-TIP ./MI-TIP.copy
 ```
-With any prefered editor, such as vim, users can disable the parts which have been already done. Those parts can be deleted or encapsulated into functions. 
+With any prefered editor, such as vim, users can disable the parts which have been done. Those parts can be deleted or encapsulated into functions. 
 
 _Please note that commands before_
 ```
