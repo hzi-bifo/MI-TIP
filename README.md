@@ -87,7 +87,7 @@ concatenateAln.py --l  $good_genes_list --o $FINAL_ALN # make a concatenated ali
 # Compute a tree with the concatenated alignment
 FastTreeMP -nt -gtr -gamma $FINAL_ALN > $FINAL_TREE
 ```
-#### What to do when the pipeline doesn't work well?<a name="troubleshooting"></a>
+#### What to do when the pipeline doesn't work as expected?<a name="troubleshooting"></a>
 MI-TIP is a bash script. By copying and editing it, processes can be easily conducted again. 
 ##### step 1: check the log file (default: tmp/MI-TIP.log)
 A log file is written to help people track problems. The file includes two columns: the time stamp, and the message. For example, the last message can be:
