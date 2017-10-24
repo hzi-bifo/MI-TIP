@@ -1,6 +1,23 @@
 ## MI-TIP: MIcrobial Tree Inference Pipeline
+- Introduction
+- <a href="#installation">Installation</a>
+- Dependencies
+- Usage
+- Principle processes
+- What to do when the pipeline doesn't work as expected?
 #### Introduction
-MI-TIP is a pipeline to compute a tree of bacterial population without precomputed genomic sequences. To conduct the pipeline, only one single command is needed. All the options required by the pipeline can be edited in another file, helping to review and reproduce results with the same method and data. 
+MI-TIP is a pipeline to compute a tree of bacterial population without precomputed genomic sequences. To conduct the pipeline, only one single command is needed. All the options required by the pipeline can be edited in another file, helping to review and reproduce results with the same method and data. Furthermore, the script can be cloned and edited to conduct specific processes, allowing users to continue without rerunning all the workflow. 
+#### <a name="installation"></a>Installation
+- step 1: Click "Clone or download", which should be found on the upper-right of github main page, and copy the URL.
+- step 2: Open a terminal, go to the folder of installation, and clone the repository by typing
+```
+git clone https://github.com/hzi-bifo/MI-TIP
+```
+- step 3: Add the path to the environmental variables. If the installation directory is ```~/bin/MI-TIP```, the enviromental variable $PATH can be edited by typing
+```
+PATH='~bin/MI-TIP':$PATH
+```
+This command can also be inserted to the ```~/.profile``` to make the change be done automatically. 
 #### Dependencies
 MI-TIP, like most of other tree inference workflow, involves in a list of software. Considering the stability, a version same as listed here is strongly suggested. 
 - samtools (1.3.1),bcftools (1.3.1), and htslib (1.3.1) https://github.com/samtools
