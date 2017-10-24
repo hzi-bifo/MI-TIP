@@ -17,7 +17,7 @@ git clone https://github.com/hzi-bifo/MI-TIP
 ```
 - step 3: Add the path to the environmental variables. If the installation directory is ```~/bin/MI-TIP```, the enviromental variable ```$PATH``` can be updated by the command
 ```
-export PATH='~bin/MI-TIP':$PATH
+export PATH='~/bin/MI-TIP':$PATH
 ```
 This command can also be inserted to the ```~/.profile``` to make the change be done automatically. 
 #### Dependencies<a name="dependencies"></a>
@@ -42,13 +42,14 @@ Salvador Capella-Gutierrez; Jose M. Silla-Martinez; Toni Gabaldon. Bioinformatic
 - FastTreeMP (2.1.10 Double precision, No SSE3, OpenMP) 
 Price, M.N., Dehal, P.S., and Arkin, A.P. (2010) FastTree 2 -- Approximately Maximum-Likelihood Trees for Large Alignments. PLoS ONE, 5(3):e9490. doi:10.1371/journal.pone.0009490.
 #### Usage<a name="usage"></a>
-##### 1. Check and edit the most files
+##### 1. Check the materials
 - fq list (see FQ_LIST.FORMAT for details)
 - gene regions list (see GENE_REGIONS.FORMAT for details)
 - reference genome (fasta format)
 - fastq files
+##### 2. Edit the environment and specify the material in the config file
 - MI-TIP.config (copy and modify before running MI-TIP)
-##### 2. Run the command
+##### 2. Run MI-TIP
 ```
 MI-TIP <MI-TIP.config>
 ```
@@ -87,14 +88,14 @@ concatenateAln.py --l  $good_genes_list --o $FINAL_ALN # make a concatenated ali
 # Compute a tree with the concatenated alignment
 FastTreeMP -nt -gtr -gamma $FINAL_ALN > $FINAL_TREE
 ```
-#### What to do when the pipeline doesn't work well?<a name="troubleshooting"></a>
+#### What to do when the pipeline doesn't work as expected?<a name="troubleshooting"></a>
 MI-TIP is a bash script. By copying and editing it, processes can be easily conducted again. 
 ##### step 1: check the log file (default: tmp/MI-TIP.log)
-A log file is written to help people track problems. The file includes two columns: the time stamp, and the message. For example, the last message can be:
+A log file is written to help people track problems. The file includes two columns: the time stamp, and the message. For example, if the last line in the log was:
 ```
 17:39:14        Computing consensus sequences...
 ```
-and it means that the pipeline stopped when computing the consensus sequences, suggesting that some problem happened after the message was written by MI-TIP.
+it means that the pipeline stopped when computing the consensus sequences, suggesting that some problem happened after the message was written by MI-TIP.
 ##### step 2: find possible problems in the MI-TIP script
 By checking the log file, it is known that some problems happened after the message was written. In this example, subsequent processes which didn't't run correctly after the last message was written are
 ```
