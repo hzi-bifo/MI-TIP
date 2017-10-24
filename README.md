@@ -6,9 +6,9 @@
 - <a href="#processes">Principle processes</a>
 - <a href="#troubleshooting">What to do when the pipeline doesn't work as expected?</a>
 #### Introduction<a name="introduction"></a>
-MI-TIP is a pipeline to compute a tree of bacterial population without precomputed genomic sequences. To conduct the pipeline, only one single command is needed. All the options required by the pipeline can be edited in another file, helping users to review and reproduce results with the same method and data. Furthermore, the main script MI-TIP can be cloned and edited to conduct specific processes, allowing users to continue without rerunning all the workflow. 
+MI-TIP is a pipeline to compute a tree of bacterial population without precomputed genomic sequences. To conduct the pipeline, only one single command is needed. All the options required by the pipeline can be edited in another file, helping users to review and reproduce results with the same method and data. Furthermore, the main script MI-TIP can be cloned and edited to conduct specific processes, allowing users to continue the works without rerunning all the pipeline when any unexpected result is generated. 
 
-The tools should be used only when our license is accepted. Please read the LICENSE file for details. 
+The tools should be used only when the Apache 2 license is accepted. Please read the LICENSE file for details. 
 #### Installation<a name="installation"></a>
 - step 1: Click "Clone or download", which should be found on the upper-right of github main page, and copy the URL.
 - step 2: Open a terminal, go to the folder of installation, and clone the repository by the command
