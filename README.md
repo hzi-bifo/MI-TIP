@@ -1,13 +1,13 @@
 ## MI-TIP: MIcrobial Tree Inference Pipeline
-- Introduction
+- <a href="#introduction">Introduction</a>
 - <a href="#installation">Installation</a>
-- Dependencies
-- Usage
-- Principle processes
-- What to do when the pipeline doesn't work as expected?
-#### Introduction
+- <a href="#dependencies">Dependencies</a>
+- <a href="#usage">Usage</a>
+- <a href="#processes">Principle processes</a>
+- <a href="#troubleshooting">What to do when the pipeline doesn't work as expected?</a>
+#### Introduction<a name="introduction"></a>
 MI-TIP is a pipeline to compute a tree of bacterial population without precomputed genomic sequences. To conduct the pipeline, only one single command is needed. All the options required by the pipeline can be edited in another file, helping to review and reproduce results with the same method and data. Furthermore, the script can be cloned and edited to conduct specific processes, allowing users to continue without rerunning all the workflow. 
-#### <a name="installation"></a>Installation
+#### Installation<a name="installation"></a>
 - step 1: Click "Clone or download", which should be found on the upper-right of github main page, and copy the URL.
 - step 2: Open a terminal, go to the folder of installation, and clone the repository by typing
 ```
@@ -18,7 +18,7 @@ git clone https://github.com/hzi-bifo/MI-TIP
 PATH='~bin/MI-TIP':$PATH
 ```
 This command can also be inserted to the ```~/.profile``` to make the change be done automatically. 
-#### Dependencies
+#### Dependencies<a name="dependencies"></a>
 MI-TIP, like most of other tree inference workflow, involves in a list of software. Considering the stability, a version same as listed here is strongly suggested. 
 - samtools (1.3.1),bcftools (1.3.1), and htslib (1.3.1) https://github.com/samtools
 Li H, A statistical framework for SNP calling, mutation discovery, association mapping and population genetical parameter estimation from sequencing data. Bioinformatics. 2011 Nov 1;27(21):2987-93. Epub 2011 Sep 8. [PMID: 21903627]
@@ -39,7 +39,7 @@ trimAl: a tool for automated alignment trimming in large-scale phylogenetic anal
 Salvador Capella-Gutierrez; Jose M. Silla-Martinez; Toni Gabaldon. Bioinformatics 2009 25: 1972-1973.
 - FastTreeMP (2.1.10 Double precision, No SSE3, OpenMP) 
 Price, M.N., Dehal, P.S., and Arkin, A.P. (2010) FastTree 2 -- Approximately Maximum-Likelihood Trees for Large Alignments. PLoS ONE, 5(3):e9490. doi:10.1371/journal.pone.0009490.
-#### Usage 
+#### Usage<a name="usage"></a>
 ##### 1. Check and edit the most files
 - fq list (see FQ_LIST.FORMAT for details)
 - gene regions list (see GENE_REGIONS.FORMAT for details)
@@ -51,7 +51,7 @@ Price, M.N., Dehal, P.S., and Arkin, A.P. (2010) FastTree 2 -- Approximately Max
 MI-TIP <MI-TIP.config>
 ```
 
-#### Principle processes
+#### Principle processes<a name="processes"></a>
 ##### 1. detect variant
 ```
 # Create commands to run stampy
@@ -85,7 +85,7 @@ concatenateAln.py --l  $good_genes_list --o $FINAL_ALN # make a concatenated ali
 # Compute a tree with the concatenated alignment
 FastTreeMP -nt -gtr -gamma $FINAL_ALN > $FINAL_TREE
 ```
-#### What to do when the pipeline doesn't work well?
+#### What to do when the pipeline doesn't work well?<a name="troubleshooting"></a>
 MI-TIP is a bash script. By copying and editing it, processes can be easily conducted again. 
 ##### step 1: check the log file (default: tmp/MI-TIP.log)
 A log file is written to help people track problems. The file includes two columns: the time stamp, and the message. For example, the last message can be:
