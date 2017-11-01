@@ -55,9 +55,13 @@ Price, M.N., Dehal, P.S., and Arkin, A.P. (2010) FastTree 2 -- Approximately Max
 =======
 ##### 2. Edit the environment and specify the material in the config file
 - MI-TIP.config (copy and modify before running MI-TIP)
-##### 2. Run MI-TIP
+##### 3. Run MI-TIP
 ```
-MI-TIP <MI-TIP.config>
+MI-TIP <path/of/your/MI-TIP.config>
+```
+An usage with ```nohup``` is recommended:
+```
+nohup MI-TIP <path/of/your/MI-TIP.config> &
 ```
 #### Principle processes<a name="processes"></a>
 ##### 1. detect variant
