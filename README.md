@@ -1,7 +1,33 @@
 ## MI-TIP: MIcrobial Tree Inference Pipeline
+<<<<<<< HEAD
 #### Introduction
 MI-TIP is a pipeline to compute a tree of bacterial population without precomputed genomic sequences.
 #### Dependencies
+=======
+- <a href="#introduction">Introduction</a>
+- <a href="#installation">Installation</a>
+- <a href="#dependencies">Dependencies</a>
+- <a href="#usage">Usage</a>
+- <a href="#processes">Principle processes</a>
+- <a href="#troubleshooting">What to do when the pipeline doesn't work as expected?</a>
+#### Introduction<a name="introduction"></a>
+MI-TIP is a pipeline to compute a tree of bacterial population without precomputed genomic sequences. To conduct the pipeline, only one single command is needed. All the options required by the pipeline can be edited in another file, helping users to review and reproduce results with the same method and data. Furthermore, the main script MI-TIP can be cloned and edited to conduct specific processes, allowing users to continue the works without rerunning all the pipeline when any unexpected result is generated. 
+
+The tools should be used only when the Apache 2 license is accepted. Please read the LICENSE file for details. 
+#### Installation<a name="installation"></a>
+- step 1: Click "Clone or download", which should be found on the upper-right of github main page, and copy the URL.
+- step 2: Open a terminal, go to the folder of installation, and clone the repository by the command
+```
+git clone https://github.com/hzi-bifo/MI-TIP
+```
+- step 3: Add the path to the environmental variables. If the installation directory is ```~/bin/MI-TIP```, the enviromental variable ```$PATH``` can be updated by the command
+```
+export PATH='~/bin/MI-TIP':$PATH
+```
+This command can also be inserted to the ```~/.profile``` to make the change be done automatically. 
+#### Dependencies<a name="dependencies"></a>
+MI-TIP, like most of other tree inference workflow, involves in a list of software. Considering the stability, a version same as listed here is strongly suggested. 
+>>>>>>> 031dfa1bd25408e546ecf1ce7d701df3b5659519
 - samtools (1.3.1),bcftools (1.3.1), and htslib (1.3.1) https://github.com/samtools
 Li H, A statistical framework for SNP calling, mutation discovery, association mapping and population genetical parameter estimation from sequencing data. Bioinformatics. 2011 Nov 1;27(21):2987-93. Epub 2011 Sep 8. [PMID: 21903627]
 - bamtools (2.3.0) https://github.com/pezmaster31/bamtools
@@ -21,20 +47,30 @@ trimAl: a tool for automated alignment trimming in large-scale phylogenetic anal
 Salvador Capella-Gutierrez; Jose M. Silla-Martinez; Toni Gabaldon. Bioinformatics 2009 25: 1972-1973.
 - FastTreeMP (2.1.10 Double precision, No SSE3, OpenMP) 
 Price, M.N., Dehal, P.S., and Arkin, A.P. (2010) FastTree 2 -- Approximately Maximum-Likelihood Trees for Large Alignments. PLoS ONE, 5(3):e9490. doi:10.1371/journal.pone.0009490.
-#### Usage 
-1. Check required files
-- MI-TIP.config (copy and modify before running MI-TIP)
+#### Usage<a name="usage"></a>
+##### 1. Check the materials
 - fq list (see FQ_LIST.FORMAT for details)
 - gene regions list (see GENE_REGIONS.FORMAT for details)
 - reference genome (fasta format)
 - fastq files
+<<<<<<< HEAD
 2. Run the command
+=======
+##### 2. Edit the environment and specify the material in the config file
+- MI-TIP.config (copy and modify before running MI-TIP)
+##### 2. Run MI-TIP
+>>>>>>> 031dfa1bd25408e546ecf1ce7d701df3b5659519
 ```
 MI-TIP <MI-TIP.config>
 ```
 
+<<<<<<< HEAD
 #### Priciple processes of MI-TIP
 1. detect variant
+=======
+#### Principle processes<a name="processes"></a>
+##### 1. detect variant
+>>>>>>> 031dfa1bd25408e546ecf1ce7d701df3b5659519
 ```
 # Create commands to run stampy
 make_mapping_commands.py --l $FQ --r $REF_FASTA --out $SAM_DIR > $make_sam_commands
@@ -43,17 +79,28 @@ parallel --retries 3 -j 30 --joblog $sam_log < $make_sam_commands
 # generating six commands files, including five of running different processes and one for ordering them
 make_sam2vcf_commands.py --r $REF_FASTA --s $sam_list --b $BAM_DIR --v $VCF_DIR --n $THR_NUM
 bash sam2vcf.conductor.commands
+```
+
+##### 2. compute coding sequences
 
 ```
+<<<<<<< HEAD
 2. compute coding sequences
 ```
+=======
+>>>>>>> 031dfa1bd25408e546ecf1ce7d701df3b5659519
 # Create commands to run makeConsensus_core.py
 makeConsensus_commands.py --s makeConsensus_core.py --r $REF_FASTA --v $vcf_list --g $GENE_REGIONS --o $GENE_SEQ_DIR > $make_concensus_commands
 # Run commands parallely
 parallel --retries 3 -j $THR_NUM --joblog $consensus_log < $make_concensus_commands
+```
 
+<<<<<<< HEAD
 ```
 3. align gene sequences and conduct tree inference
+=======
+##### 3. align gene sequences and conduct tree inference
+>>>>>>> 031dfa1bd25408e546ecf1ce7d701df3b5659519
 
 ```
 # Cluster the consensus sequences of coding region by genes
@@ -65,4 +112,37 @@ cat $aln_ident_list | sort -rnk 2 | awk -v c=$aln_ident_list_CUT '$2 > c'| awk '
 concatenateAln.py --l  $good_genes_list --o $FINAL_ALN # make a concatenated alignment
 # Compute a tree with the concatenated alignment
 FastTreeMP -nt -gtr -gamma $FINAL_ALN > $FINAL_TREE
+```
+#### What to do when the pipeline doesn't work as expected?<a name="troubleshooting"></a>
+MI-TIP is a bash script. By copying and editing it, processes can be easily conducted again. 
+##### step 1: check the log file (default: tmp/MI-TIP.log)
+A log file is written to help people track problems. The file includes two columns: the time stamp, and the message. For example, if the last line in the log was:
+```
+17:39:14        Computing consensus sequences...
+```
+it means that the pipeline stopped when computing the consensus sequences, suggesting that some problem happened after the message was written by MI-TIP.
+##### step 2: find possible problems in the MI-TIP script
+By checking the log file, it is known that some problems happened after the message was written. In this example, subsequent processes which didn't't run correctly after the last message was written are
+```
+makeConsensus_commands.py --s makeConsensus_core.py --r $REF_FASTA --v $vcf_list --g $GENE_REGIONS --o $GENE_SEQ_DIR > $make_concensus_commands
+```
+and
+```
+parallel --retries 3 -j $THR_NUM --joblog $consensus_log < $make_concensus_commands
+```
+It is reasonable to firstly check whether the commands in ```$make_concensus_commands``` are correct. Then, if there was nothing problematic, the ```$consensus_log``` can then be checked to see whether any command exit with unusual status. it can be suggested to test the single line command again to find the putative problem. A common problem can be caused by incorrect path of files. 
+##### step 3: solve the problem and continue the piepline
+Once the problem is solved, the pipeline can be continued to finish the rest parts. Please copy the```$MITIP_HOME/MI-TIP``` to ```./MI-TIP.copy```, like:
+```
+cp $MITIP_HOME/MI-TIP ./MI-TIP.copy
+```
+With any prefered editor, such as vim, users can disable the parts which have been done. Those parts can be deleted or encapsulated into functions. 
+
+_Please note that commands before_
+```
+# Workflow begins #
+```
+_are strongly suggested to be unchanged._
+##### step 4: ask for help if the problem cannot be solved
+Please open an issue in this repository.
 

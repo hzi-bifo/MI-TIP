@@ -10,9 +10,21 @@ import pprint
 def create_command(info, ref, sam_f):
     reads_type= info['type']
     if reads_type == 'mate-pair':
-	print('stampy.py -g {0} -h {1} --insertsize2=-{2} --insertsd2={3} -M {4} {5} > {6}'.format(ref, ref, info['insert_size'], info['insert_std'], info['reads_file1'], info['reads_file2'], sam_f))
+	command='stampy.py -g {0} -h {1}'.format(ref, ref)
+	if 'insert_size' in info:
+	    command=command+' --insertsize2=-{}'.format(info['insert_size']) 
+	if 'insert_std' in info:
+	    command=command+' --insertsd2={}'.format(info['insert_std']) 
+	command=command+' -M {} {} > {}'.format(info['reads_file1'], info['reads_file2'], sam_f)
+	print(command)
     elif reads_type == 'paired-end':
-	print('stampy.py -g {0} -h {1} --insertsize=-{2} --insertsd={3} -M {4} {5} > {6}'.format(ref, ref, info['insert_size'], info['insert_std'], info['reads_file1'], info['reads_file2'], sam_f))
+	command='stampy.py -g {0} -h {1}'.format(ref, ref)
+	if 'insert_size' in info:
+	    command=command+' --insertsize={}'.format(info['insert_size']) 
+	if 'insert_std' in info:
+	    command=command+' --insertsd={}'.format(info['insert_std']) 
+	command=command+' -M {} {} > {}'.format(info['reads_file1'], info['reads_file2'], sam_f)
+	print(command)
     elif reads_type == 'single':
 	print('stampy.py -g {0} -h {1} -M {2} > {3}'.format(ref, ref,  info['reads_file1'], sam_f))
     else:

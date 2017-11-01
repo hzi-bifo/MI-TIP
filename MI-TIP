@@ -14,14 +14,17 @@ write_log(){
 
 test_file(){ # check file
   if [ ! -e $1 ];then
+    write_log "ERROR: "$1" not found"
     exit $1" not found"
   fi
 }
 
 test_file $1
-
 source $1
 test_dir $TMP_DIR
+
+# Workflow begins #
+
 ####
 # Make sam files from row reads
 # input:

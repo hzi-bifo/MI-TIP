@@ -3,6 +3,7 @@ import re
 import argparse
 import os
 import os.path
+import sys
 
 def create(script, ref_f, genes_l_f, out_f, vcf_gz_f):
     return('{} -f {} -r {} -out {} -v {} -n 1'.format(script, ref_f, genes_l_f, out_f, vcf_gz_f))
