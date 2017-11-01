@@ -1,9 +1,7 @@
 ## MI-TIP: MIcrobial Tree Inference Pipeline
-<<<<<<< HEAD
 #### Introduction
 MI-TIP is a pipeline to compute a tree of bacterial population without precomputed genomic sequences.
 #### Dependencies
-=======
 - <a href="#introduction">Introduction</a>
 - <a href="#installation">Installation</a>
 - <a href="#dependencies">Dependencies</a>
@@ -27,7 +25,6 @@ export PATH='~/bin/MI-TIP':$PATH
 This command can also be inserted to the ```~/.profile``` to make the change be done automatically. 
 #### Dependencies<a name="dependencies"></a>
 MI-TIP, like most of other tree inference workflow, involves in a list of software. Considering the stability, a version same as listed here is strongly suggested. 
->>>>>>> 031dfa1bd25408e546ecf1ce7d701df3b5659519
 - samtools (1.3.1),bcftools (1.3.1), and htslib (1.3.1) https://github.com/samtools
 Li H, A statistical framework for SNP calling, mutation discovery, association mapping and population genetical parameter estimation from sequencing data. Bioinformatics. 2011 Nov 1;27(21):2987-93. Epub 2011 Sep 8. [PMID: 21903627]
 - bamtools (2.3.0) https://github.com/pezmaster31/bamtools
@@ -53,24 +50,17 @@ Price, M.N., Dehal, P.S., and Arkin, A.P. (2010) FastTree 2 -- Approximately Max
 - gene regions list (see GENE_REGIONS.FORMAT for details)
 - reference genome (fasta format)
 - fastq files
-<<<<<<< HEAD
+
 2. Run the command
 =======
 ##### 2. Edit the environment and specify the material in the config file
 - MI-TIP.config (copy and modify before running MI-TIP)
 ##### 2. Run MI-TIP
->>>>>>> 031dfa1bd25408e546ecf1ce7d701df3b5659519
 ```
 MI-TIP <MI-TIP.config>
 ```
-
-<<<<<<< HEAD
-#### Priciple processes of MI-TIP
-1. detect variant
-=======
 #### Principle processes<a name="processes"></a>
 ##### 1. detect variant
->>>>>>> 031dfa1bd25408e546ecf1ce7d701df3b5659519
 ```
 # Create commands to run stampy
 make_mapping_commands.py --l $FQ --r $REF_FASTA --out $SAM_DIR > $make_sam_commands
@@ -80,28 +70,14 @@ parallel --retries 3 -j 30 --joblog $sam_log < $make_sam_commands
 make_sam2vcf_commands.py --r $REF_FASTA --s $sam_list --b $BAM_DIR --v $VCF_DIR --n $THR_NUM
 bash sam2vcf.conductor.commands
 ```
-
 ##### 2. compute coding sequences
-
 ```
-<<<<<<< HEAD
-2. compute coding sequences
-```
-=======
->>>>>>> 031dfa1bd25408e546ecf1ce7d701df3b5659519
 # Create commands to run makeConsensus_core.py
 makeConsensus_commands.py --s makeConsensus_core.py --r $REF_FASTA --v $vcf_list --g $GENE_REGIONS --o $GENE_SEQ_DIR > $make_concensus_commands
 # Run commands parallely
 parallel --retries 3 -j $THR_NUM --joblog $consensus_log < $make_concensus_commands
 ```
-
-<<<<<<< HEAD
-```
-3. align gene sequences and conduct tree inference
-=======
 ##### 3. align gene sequences and conduct tree inference
->>>>>>> 031dfa1bd25408e546ecf1ce7d701df3b5659519
-
 ```
 # Cluster the consensus sequences of coding region by genes
 makeGroupFasta.py --l $seqfiles_list --d $GENE_FAMILY_SEQ_DIR --c $core_genes
