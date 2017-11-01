@@ -118,6 +118,10 @@ _Please note that commands before_
 # Workflow begins #
 ```
 _are strongly suggested to be unchanged._
+Then the modified MI-TIP pipeline can be used in a same way:
+```
+./MI-TIP.copy <path/of/your/MI-TIP.config>
+```
 ##### step 4: ask for help if the problem cannot be solved
 Please open an issue in this repository.
 
