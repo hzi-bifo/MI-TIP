@@ -122,6 +122,6 @@ Then the modified MI-TIP pipeline can be used in a same way:
 ```
 ./MI-TIP.copy <path/of/your/MI-TIP.config>
 ```
-##### step 4: ask for help if the problem cannot be solved
-Please open an issue in this repository.
+##### step 4: contact us
+In case that a problem cannot be solved easily, please open an issue in this repository.
 
