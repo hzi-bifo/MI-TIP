@@ -52,7 +52,6 @@ Price, M.N., Dehal, P.S., and Arkin, A.P. (2010) FastTree 2 -- Approximately Max
 - fastq files
 
 2. Run the command
-=======
 ##### 2. Edit the environment and specify the material in the config file
 - MI-TIP.config (copy and modify before running MI-TIP)
 ##### 3. Run MI-TIP
