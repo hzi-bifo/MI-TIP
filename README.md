@@ -1,4 +1,7 @@
 ## MI-TIP: MIcrobial Tree Inference Pipeline
+#### Introduction
+MI-TIP is a pipeline to compute a tree of bacterial population without precomputed genomic sequences.
+#### Dependencies
 - <a href="#introduction">Introduction</a>
 - <a href="#installation">Installation</a>
 - <a href="#dependencies">Dependencies</a>
@@ -7,8 +10,6 @@
 - <a href="#troubleshooting">What to do when the pipeline doesn't work as expected?</a>
 #### Introduction<a name="introduction"></a>
 MI-TIP is a pipeline to compute a tree of bacterial population without precomputed genomic sequences. To conduct the pipeline, only one single command is needed. All the options required by the pipeline can be edited in another file, helping users to review and reproduce results with the same method and data. Furthermore, the main script MI-TIP can be cloned and edited to conduct specific processes, allowing users to continue the works without rerunning all the pipeline when any unexpected result is generated. 
-
-The tools should be used only when the Apache 2 license is accepted. Please read the LICENSE file for details. 
 #### Installation<a name="installation"></a>
 - step 1: Click "Clone or download", which should be found on the upper-right of github main page, and copy the URL.
 - step 2: Open a terminal, go to the folder of installation, and clone the repository by the command
@@ -49,11 +50,14 @@ Price, M.N., Dehal, P.S., and Arkin, A.P. (2010) FastTree 2 -- Approximately Max
 - fastq files
 ##### 2. Edit the environment and specify the material in the config file
 - MI-TIP.config (copy and modify before running MI-TIP)
-##### 2. Run MI-TIP
+##### 3. Run MI-TIP
 ```
-MI-TIP <MI-TIP.config>
+MI-TIP <path/of/your/MI-TIP.config>
 ```
-
+An usage with ```nohup``` is recommended:
+```
+nohup MI-TIP <path/of/your/MI-TIP.config> &
+```
 #### Principle processes<a name="processes"></a>
 ##### 1. detect variant
 ```
@@ -65,18 +69,14 @@ parallel --retries 3 -j 30 --joblog $sam_log < $make_sam_commands
 make_sam2vcf_commands.py --r $REF_FASTA --s $sam_list --b $BAM_DIR --v $VCF_DIR --n $THR_NUM
 bash sam2vcf.conductor.commands
 ```
-
 ##### 2. compute coding sequences
-
 ```
 # Create commands to run makeConsensus_core.py
 makeConsensus_commands.py --s makeConsensus_core.py --r $REF_FASTA --v $vcf_list --g $GENE_REGIONS --o $GENE_SEQ_DIR > $make_concensus_commands
 # Run commands parallely
 parallel --retries 3 -j $THR_NUM --joblog $consensus_log < $make_concensus_commands
 ```
-
 ##### 3. align gene sequences and conduct tree inference
-
 ```
 # Cluster the consensus sequences of coding region by genes
 makeGroupFasta.py --l $seqfiles_list --d $GENE_FAMILY_SEQ_DIR --c $core_genes
@@ -118,6 +118,10 @@ _Please note that commands before_
 # Workflow begins #
 ```
 _are strongly suggested to be unchanged._
-##### step 4: ask for help if the problem cannot be solved
-Please open an issue in this repository.
+Then the modified MI-TIP pipeline can be used in a same way:
+```
+./MI-TIP.copy <path/of/your/MI-TIP.config>
+```
+##### step 4: contact us
+In case that a problem cannot be solved easily, please open an issue in this repository.
 

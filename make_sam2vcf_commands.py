@@ -3,6 +3,7 @@ import os
 import os.path
 import re
 import argparse
+import sys
 
 def check_dir(d):
     if not os.path.exists(d):
