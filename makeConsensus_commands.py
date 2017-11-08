@@ -6,7 +6,7 @@ import os.path
 import sys
 
 def create(script, ref_f, genes_l_f, out_f, vcf_gz_f):
-    return('{} -f {} -r {} -out {} -v {} -n 1'.format(script, ref_f, genes_l_f, out_f, vcf_gz_f))
+    return('{} -f {} -r {} -out {} -v {}'.format(script, ref_f, genes_l_f, out_f, vcf_gz_f))
 def check_dir(d):
     if not os.path.exists(d):
 	os.makedirs(d)
