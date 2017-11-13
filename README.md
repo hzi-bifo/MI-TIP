@@ -16,37 +16,27 @@ MI-TIP is a pipeline to compute a tree of bacterial population without precomput
 ```
 git clone https://github.com/hzi-bifo/MI-TIP
 ```
-- step 3: Add the path to the environmental variables. If the installation directory is ```~/bin/MI-TIP```, the enviromental variable ```$PATH``` can be updated by the command
+- step 3: Add the path to the environmental variables. If the installation path is ```~/bin/MI-TIP```, the enviromental variable ```$PATH``` can be updated by the command
 ```
 export PATH='~/bin/MI-TIP':$PATH
 ```
 This command can also be inserted to the ```~/.profile``` to make the change be done automatically. 
 #### Dependencies<a name="dependencies"></a>
-MI-TIP, like most of other tree inference workflow, involves in a list of software. Considering the stability, a version same as listed here is strongly suggested. 
+MI-TIP, like most of other tree inference workflow, involves in a list of software. Versions listed below were tested. 
 - samtools (1.3.1),bcftools (1.3.1), and htslib (1.3.1) https://github.com/samtools
-Li H, A statistical framework for SNP calling, mutation discovery, association mapping and population genetical parameter estimation from sequencing data. Bioinformatics. 2011 Nov 1;27(21):2987-93. Epub 2011 Sep 8. [PMID: 21903627]
 - bamtools (2.3.0) https://github.com/pezmaster31/bamtools
-Derek W. Barnett et al., BamTools: a C++ API and toolkit for analyzing and managing BAM files, Bioinformatics, Volume 27, Issue 12, 15 June 2011, Pages 1691-1692
 - freebayes-parallel in freebayes (v1.1.0) https://github.com/ekg/freebayes
-Erik Garrison and Gabor Marth, Haplotype-based variant detection from short-read sequencing, 20 Jul 2012
 - GNU parallel (20161222) http://www.gnu.org/software/parallel
-O. Tange (2011): GNU Parallel - The Command-Line Power Tool,
-    ;login: The USENIX Magazine, February 2011:42-47.
+- bwa (Version: 0.7.15-r1140) http://bio-bwa.sourceforge.net/
 - stampy.py (v1.0.31) http://www.well.ox.ac.uk/project-stampy
-G. Lunter and M. Goodson.  Stampy: A statistical algorithm for sensitive and fast mapping of Illumina sequence reads. Genome Res. 2011 21:936-939.
+- VCFtools (0.1.15) https://vcftools.github.io/downloads.html
 - mafft (v7.305b) https://mafft.cbrc.jp/alignment/software/
-Katoh, Misawa, Kuma, Miyata 2002 (Nucleic Acids Res. 30:3059-3066) 
-MAFFT: a novel method for rapid multiple sequence alignment based on fast Fourier transform. 
 - trimal (1.2rev59) http://trimal.cgenomics.org/
-trimAl: a tool for automated alignment trimming in large-scale phylogenetic analyses.
-Salvador Capella-Gutierrez; Jose M. Silla-Martinez; Toni Gabaldon. Bioinformatics 2009 25: 1972-1973.
-- FastTreeMP (2.1.10 Double precision, No SSE3, OpenMP) 
-Price, M.N., Dehal, P.S., and Arkin, A.P. (2010) FastTree 2 -- Approximately Maximum-Likelihood Trees for Large Alignments. PLoS ONE, 5(3):e9490. doi:10.1371/journal.pone.0009490.
+- FastTreeMP (2.1.10 Double precision, No SSE3, OpenMP) http://www.microbesonline.org/fasttree/
 #### Usage<a name="usage"></a>
 ##### 1. Check the materials
 - fq list (see FQ_LIST.FORMAT for details)
-- gene regions list (see GENE_REGIONS.FORMAT for details)
-- reference genome (fasta format)
+- reference genome (.fasta and .gff)
 - fastq files
 ##### 2. Edit the environment and specify the material in the config file
 - MI-TIP.config (copy and modify before running MI-TIP)
@@ -59,27 +49,26 @@ An usage with ```nohup``` is recommended:
 nohup MI-TIP <path/of/your/MI-TIP.config> &
 ```
 #### Principle processes<a name="processes"></a>
-##### 1. detect variant
+##### 1. detect variant and compute consensus sequences
 ```
-# Create commands to run stampy
-make_mapping_commands.py --l $FQ --r $REF_FASTA --out $SAM_DIR > $make_sam_commands
-# Run commands parallely
-parallel --retries 3 -j 30 --joblog $sam_log < $make_sam_commands
-# generating six commands files, including five of running different processes and one for ordering them
-make_sam2vcf_commands.py --r $REF_FASTA --s $sam_list --b $BAM_DIR --v $VCF_DIR --n $THR_NUM
-bash sam2vcf.conductor.commands
+make_GeneRegions.py --g $REF_GFF --f gene > $GENE_REGIONS
 ```
-##### 2. compute coding sequences
+##### 2. detect variant and compute consensus sequences
 ```
-# Create commands to run makeConsensus_core.py
-makeConsensus_commands.py --s makeConsensus_core.py --r $REF_FASTA --v $vcf_list --g $GENE_REGIONS --o $GENE_SEQ_DIR > $make_concensus_commands
-# Run commands parallely
-parallel --retries 3 -j $THR_NUM --joblog $consensus_log < $make_concensus_commands
+make_genes_commands.py --t $TMP_DIR --l $FQ --r $REF_FASTA --g $GENE_REGIONS  > $mapping_commands
+parallel --retries 3 -j $THR_NUM --joblog $mapping_log < $mapping_commands
 ```
-##### 3. align gene sequences and conduct tree inference
+##### 3. sort gene sequences by gene family
+```
+ls $TMP_DIR/*/stampy_with_bwa.fa | awk -F'/' '{print $(NF-1)"\t"$0}' > $seqfiles_list 
+makeGroupFasta.py --l $seqfiles_list --d $GENE_FAMILY_SEQ_DIR --c $core_genes
+```
+##### 4. align gene sequences and conduct tree inference
 ```
 # Cluster the consensus sequences of coding region by genes
-makeGroupFasta.py --l $seqfiles_list --d $GENE_FAMILY_SEQ_DIR --c $core_genes
+makeGroupAln.py -f $core_genes -o $GENE_FAMILY_ALN_DIR -p 0 -a globalpair > $mafft_commands 
+parallel -j $THR_NUM --retries 5 --joblog $mafft_log < $mafft_commands
+ls $GENE_FAMILY_ALN_DIR/* > $aln_list
 # Filter gene families by alignment quality
 Compute_avIdent.sh $aln_list >  $aln_ident_list
 cat $aln_ident_list | sort -rnk 2 | awk -v c=$aln_ident_list_CUT '$2 > c'| awk '{print $1}' > $good_genes_list # quality control
@@ -89,39 +78,11 @@ concatenateAln.py --l  $good_genes_list --o $FINAL_ALN # make a concatenated ali
 FastTreeMP -nt -gtr -gamma $FINAL_ALN > $FINAL_TREE
 ```
 #### What to do when the pipeline doesn't work as expected?<a name="troubleshooting"></a>
-MI-TIP is a bash script. By copying and editing it, processes can be easily conducted again. 
-##### step 1: check the log file (default: tmp/MI-TIP.log)
-A log file is written to help people track problems. The file includes two columns: the time stamp, and the message. For example, if the last line in the log was:
-```
-17:39:14        Computing consensus sequences...
-```
-it means that the pipeline stopped when computing the consensus sequences, suggesting that some problem happened after the message was written by MI-TIP.
-##### step 2: find possible problems in the MI-TIP script
-By checking the log file, it is known that some problems happened after the message was written. In this example, subsequent processes which didn't't run correctly after the last message was written are
-```
-makeConsensus_commands.py --s makeConsensus_core.py --r $REF_FASTA --v $vcf_list --g $GENE_REGIONS --o $GENE_SEQ_DIR > $make_concensus_commands
-```
-and
-```
-parallel --retries 3 -j $THR_NUM --joblog $consensus_log < $make_concensus_commands
-```
-It is reasonable to firstly check whether the commands in ```$make_concensus_commands``` are correct. Then, if there was nothing problematic, the ```$consensus_log``` can then be checked to see whether any command exit with unusual status. it can be suggested to test the single line command again to find the putative problem. A common problem can be caused by incorrect path of files. 
-##### step 3: solve the problem and continue the piepline
-Once the problem is solved, the pipeline can be continued to finish the rest parts. Please copy the```$MITIP_HOME/MI-TIP``` to ```./MI-TIP.copy```, like:
-```
-cp $MITIP_HOME/MI-TIP ./MI-TIP.copy
-```
-With any prefered editor, such as vim, users can disable the parts which have been done. Those parts can be deleted or encapsulated into functions. 
-
-_Please note that commands before_
-```
-# Workflow begins #
-```
-_are strongly suggested to be unchanged._
-Then the modified MI-TIP pipeline can be used in a same way:
-```
-./MI-TIP.copy <path/of/your/MI-TIP.config>
-```
-##### step 4: contact us
-In case that a problem cannot be solved easily, please open an issue in this repository.
+##### step 1: check the log file (default: $TMP_DIR/MI-TIP.log)
+MI-TIP writes a general log file as well as files for each part. When the output looks unusual, please go to the output folder (eg. $TMP_DIR) and check MI-TIP.log or the other log files to find putative causal comments.
+##### step 2: find possible problems and edit the MI-TIP script or MI-TIP.config
+MI-TIP is a bash script. By copying and editing it, the pipeline can be easily resumed. 
+If a problem is found and solved, users can copy the script and remove commands alreaady done. The edited MI-TIP script can then be run with the the same or edited MI-TIP.config file. Please ensure the correct verion of both MI-TIP script and options in MI-TIP.config before running. 
+##### step 3: report and feedback 
+Please open an issue in the github repository and we will try to help you to solve problems and provide technical supports. BWe also encourage users to give us any constructive comment.
 

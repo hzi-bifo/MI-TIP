@@ -19,8 +19,8 @@ from os import path
 def check_dir(d):
     if not os.path.exists(d):
 	os.makedirs(d)
-def cluster(f, output_dir):
-    strain= re.search('.+\/([^\/]+)\.fa', f).group(1)
+def cluster(strain, f, output_dir):
+#    strain= re.search('.+\/([^\/]+)\.fa', f).group(1)
 
     gene_gain= []
     for record in SeqIO.parse(f.strip(), 'fasta'):
@@ -39,11 +39,12 @@ def cluster(f, output_dir):
 
 def run(files_list, out_d, com_gene_f):
     fh= open(files_list, 'r')
-    files= [l.strip()  for l in fh.readlines()]
+    files= {l.strip().split('\t')[0]:l.strip().split('\t')[1]  for l in fh.readlines()}
+    #files= [l.strip()  for l in fh.readlines()]
     common_genes= []
-    for n in range(len(files)):
-	gene_gain= cluster(files[n], out_d)
-	common_genes= (gene_gain if n == 0 else list(set(common_genes) & set(gene_gain))) 
+    for strain in files:
+	gene_gain= cluster(strain, files[strain], out_d)
+	common_genes= (gene_gain if len(common_genes)==0 else list(set(common_genes) & set(gene_gain))) 
     fh.close()
     # write the common genes, which are not nessacerily core genes
     ch= open(com_gene_f, 'w') 
