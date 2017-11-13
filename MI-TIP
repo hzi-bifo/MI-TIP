@@ -22,64 +22,23 @@ test_file(){ # check file
 test_file $1
 source $1
 test_dir $TMP_DIR
+export PATH=$PATH:$MITIP_HOME
 
 # Workflow begins #
+write_log $log_f 'Make gene regions'
+make_GeneRegions.py --g $REF_GFF --f gene > $GENE_REGIONS
+
+write_log $log_f 'Mapping'
+make_genes_commands.py --l $FQ --r $REF_FASTA --g $GENE_REGIONS --t $TMP_DIR >  $mapping_commands
+parallel -j $THR_NUM --joblog $mapping_log --retries 3 < $mapping_commands 
 
 ####
-# Make sam files from row reads
+# List gene regions 
 # input:
-#	$FQ
-#	$REF_FASTA
+#	$REF_GFF
 ####
-test_dir $SAM_DIR
-test_file $REF_FASTA
-test_file $FQ
-write_log $log_f 'Remapping...'
-make_mapping_commands.py --l $FQ --r $REF_FASTA --out $SAM_DIR > $make_sam_commands
-parallel --retries 3 -j 30 --joblog $sam_log < $make_sam_commands
-ls $SAM_DIR/* > $sam_list 
-
-#####
-# Call variances
-# input: 
-#	$sam_list
-#	$REF_FASTA
-####
-test_dir $BAM_DIR 
-test_dir $VCF_DIR
-write_log $log_f 'Calling variants...'
-## import the script which generates the commands for parallel
-make_sam2vcf_commands.py --r $REF_FASTA --s $sam_list --b $BAM_DIR --v $VCF_DIR --n $THR_NUM ## generating six commands files, including five of running different processes and one for ordering them
-bash sam2vcf.conductor.commands
-ls $VCF_DIR/* > $vcf_list
-mv *.commands $TMP_DIR
-mv *.log $TMP_DIR
-
-#####
-# Make consensus sequences with the information of variances
-# input: 
-#	$GENE_REGIONS
-#	$vcf_list
-#	$REF_FASTA
-####
-test_dir $GENE_SEQ_DIR
-write_log $log_f 'Computing consensus sequences...'
-#cat $REF_GFF | grep -v '^#'| awk '$3=="gene"''{print $1":"$4"-"$5}'> $GENE_REGIONS # skip this if a gene regions file is already detemined
-## import the script which generates the commands for parallel
-makeConsensus_commands.py --s makeConsensus_core.py --r $REF_FASTA --v $vcf_list --g $GENE_REGIONS --o $GENE_SEQ_DIR > $make_concensus_commands 
-parallel --retries 3 -j $THR_NUM --joblog $consensus_log < $make_concensus_commands 
-ls $GENE_SEQ_DIR/* > $seqfiles_list 
-
-#####
-# Cluster the sequences 
-# One file: one gene group
-# One sequence in a file: an isolate
-# input: 
-#	$seqfiles_list
-#	$core_genes
-####
-test_dir $GENE_FAMILY_SEQ_DIR
-write_log $log_f 'Detecting gene families...'
+write_log $log_f 'Sort genes by family'
+ls $TMP_DIR/*/stampy_with_bwa.fa | awk -F'/' '{print $(NF-1)"\t"$0}' > $seqfiles_list 
 makeGroupFasta.py --l $seqfiles_list --d $GENE_FAMILY_SEQ_DIR --c $core_genes
 
 #####

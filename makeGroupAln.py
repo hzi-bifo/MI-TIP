@@ -27,7 +27,7 @@ def run (args):
 	mafft_cpu= str(args.n)
 	mafft_mol= '' if args.p == '1' else '--nuc'
 
-	print('mafft --quiet --thread {} --maxiterate 1000 {} {} {} > {}'.format(mafft_cpu, mafft_mol, mafft_alg, fasta_f, aln_f))
+	print('mafft --quiet --thread {} --maxiterate 10 {} {} {} > {}'.format(mafft_cpu, mafft_mol, mafft_alg, fasta_f, aln_f))
 
 if __name__=='__main__':
     parser= argparse.ArgumentParser(description= 'Create commands to run mafft and align sequences')
