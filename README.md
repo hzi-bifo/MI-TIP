@@ -32,7 +32,7 @@ MI-TIP, like most of other tree inference workflow, involves in a list of softwa
 - VCFtools (0.1.15) https://vcftools.github.io/downloads.html
 - mafft (v7.305b) https://mafft.cbrc.jp/alignment/software/
 - trimal (1.2rev59) http://trimal.cgenomics.org/
-- FastTreeMP (2.1.10 Double precision, No SSE3, OpenMP) 
+- FastTreeMP (2.1.10 Double precision, No SSE3, OpenMP) http://www.microbesonline.org/fasttree/
 #### Usage<a name="usage"></a>
 ##### 1. Check the materials
 - fq list (see FQ_LIST.FORMAT for details)
@@ -52,6 +52,7 @@ nohup MI-TIP <path/of/your/MI-TIP.config> &
 ##### 1. detect variant and compute consensus sequences
 ```
 make_GeneRegions.py --g $REF_GFF --f gene > $GENE_REGIONS
+```
 ##### 2. detect variant and compute consensus sequences
 ```
 make_genes_commands.py --t $TMP_DIR --l $FQ --r $REF_FASTA --g $GENE_REGIONS  > $mapping_commands
@@ -83,5 +84,5 @@ MI-TIP writes a general log file as well as files for each part. When the output
 MI-TIP is a bash script. By copying and editing it, the pipeline can be easily resumed. 
 If a problem is found and solved, users can copy the script and remove commands alreaady done. The edited MI-TIP script can then be run with the the same or edited MI-TIP.config file. Please ensure the correct verion of both MI-TIP script and options in MI-TIP.config before running. 
 ##### step 3: report and feedback 
-Please open an issue in the github repository and we will try to help you to solve problems and provide technical supports. Because software can always be improved, we also encourage users to give us any constructive comment.
+Please open an issue in the github repository and we will try to help you to solve problems and provide technical supports. BWe also encourage users to give us any constructive comment.
 
