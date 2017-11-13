@@ -22,14 +22,14 @@ export PATH='~/bin/MI-TIP':$PATH
 ```
 This command can also be inserted to the ```~/.profile``` to make the change be done automatically. 
 #### Dependencies<a name="dependencies"></a>
-MI-TIP, like most of other tree inference workflow, involves in a list of software. Considering the stability, a version same as listed here is strongly suggested. 
+MI-TIP, like most of other tree inference workflow, involves in a list of software. Versions listed below were tested. 
 - samtools (1.3.1),bcftools (1.3.1), and htslib (1.3.1) https://github.com/samtools
 - bamtools (2.3.0) https://github.com/pezmaster31/bamtools
 - freebayes-parallel in freebayes (v1.1.0) https://github.com/ekg/freebayes
 - GNU parallel (20161222) http://www.gnu.org/software/parallel
-- bwa (Version: 0.7.15-r1140)
+- bwa (Version: 0.7.15-r1140) http://bio-bwa.sourceforge.net/
 - stampy.py (v1.0.31) http://www.well.ox.ac.uk/project-stampy
-- VCFtools (0.1.15)
+- VCFtools (0.1.15) https://vcftools.github.io/downloads.html
 - mafft (v7.305b) https://mafft.cbrc.jp/alignment/software/
 - trimal (1.2rev59) http://trimal.cgenomics.org/
 - FastTreeMP (2.1.10 Double precision, No SSE3, OpenMP) 
